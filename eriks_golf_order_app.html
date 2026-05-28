@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Erik's 공치는 순서</title>
+  <style>
+    :root {
+      --bg1: #f7fbff;
+      --bg2: #eaf4ff;
+      --main: #1f6feb;
+      --accent: #ffb703;
+      --text: #172033;
+      --muted: #6b7280;
+      --card: #ffffff;
+      --danger: #ef476f;
+      --green: #06d6a0;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Segoe UI", sans-serif;
+      background: linear-gradient(160deg, var(--bg1), var(--bg2));
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 430px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 28px;
+      box-shadow: 0 18px 45px rgba(31, 111, 235, 0.15);
+      padding: 24px 18px 20px;
+      text-align: center;
+      border: 1px solid rgba(31, 111, 235, 0.12);
+    }
+
+    .logo {
+      font-size: 42px;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 30px;
+      letter-spacing: -0.04em;
+      font-weight: 900;
+    }
+
+    .subtitle {
+      margin: 8px 0 20px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+
+    .pick-btn {
+      min-height: 132px;
+      border: 0;
+      border-radius: 26px;
+      background: var(--card);
+      box-shadow: 0 10px 24px rgba(23, 32, 51, 0.09);
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      position: relative;
+      overflow: hidden;
+      padding: 14px;
+    }
+
+    .pick-btn:active {
+      transform: scale(0.96);
+    }
+
+    .pick-btn .player {
+      display: block;
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .pick-btn .number {
+      display: block;
+      font-size: 54px;
+      line-height: 1;
+      font-weight: 950;
+    }
+
+    .pick-btn.unpicked .number {
+      font-size: 36px;
+      color: var(--main);
+    }
+
+    .pick-btn.picked {
+      background: linear-gradient(145deg, #ffffff, #f2f7ff);
+    }
+
+    .pick-btn.first {
+      background: linear-gradient(145deg, #fff3c4, #ffe7ef);
+      box-shadow: 0 12px 30px rgba(239, 71, 111, 0.25);
+      animation: pop 0.45s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.88); }
+      55% { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+
+    .message {
+      min-height: 74px;
+      margin: 14px 0 10px;
+      padding: 16px 14px;
+      border-radius: 22px;
+      background: #f7f9fc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed rgba(31, 111, 235, 0.24);
+    }
+
+    .message-main {
+      font-size: 24px;
+      font-weight: 950;
+      letter-spacing: -0.04em;
+    }
+
+    .message-sub {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .message.hero {
+      background: linear-gradient(145deg, #fff8d8, #ffe8f0);
+      border: 1px solid rgba(239, 71, 111, 0.18);
+    }
+
+    .message.hero .message-main {
+      color: var(--danger);
+      animation: shake 0.45s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-2deg); }
+      50% { transform: rotate(2deg); }
+      75% { transform: rotate(-1deg); }
+    }
+
+    .summary {
+      margin-top: 12px;
+      padding: 12px;
+      background: #ffffff;
+      border-radius: 18px;
+      box-shadow: inset 0 0 0 1px rgba(23, 32, 51, 0.06);
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      display: none;
+    }
+
+    .summary.show {
+      display: block;
+    }
+
+    .reset-btn {
+      width: 100%;
+      margin-top: 14px;
+      height: 50px;
+      border: 0;
+      border-radius: 18px;
+      background: var(--main);
+      color: white;
+      font-size: 17px;
+      font-weight: 850;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(31, 111, 235, 0.25);
+    }
+
+    .reset-btn:active {
+      transform: scale(0.98);
+    }
+
+    .footer {
+      margin-top: 12px;
+      font-size: 11px;
+      color: #8a94a6;
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="logo">⛳</div>
+    <h1>공치는 순서</h1>
+    <p class="subtitle">4명이 하나씩 버튼을 눌러 순서를 정합니다.<br />1번이 나오면 오늘의 첫 샷 주인공입니다.</p>
+
+    <section class="buttons">
+      <button class="pick-btn unpicked" data-player="1">
+        <span class="player">Player 1</span>
+        <span class="number">?</span>
+      </button>
+      <button class="pick-btn unpicked" data-player="2">
+        <span class="player">Player 2</span>
+        <span class="number">?</span>
+      </button>
+      <button class="pick-btn unpicked" data-player="3">
+        <span class="player">Player 3</span>
+        <span class="number">?</span>
+      </button>
+      <button class="pick-btn unpicked" data-player="4">
+        <span class="player">Player 4</span>
+        <span class="number">?</span>
+      </button>
+    </section>
+
+    <section id="message" class="message">
+      <div class="message-main">눌러서 순서 뽑기</div>
+      <div class="message-sub">중복 없이 1번부터 4번까지 나옵니다.</div>
+    </section>
+
+    <section id="summary" class="summary"></section>
+
+    <button id="resetBtn" class="reset-btn">다시 뽑기</button>
+    <div class="footer">Erik's Golf Random Order App</div>
+  </main>
+
+  <script>
+    const buttons = Array.from(document.querySelectorAll(".pick-btn"));
+    const message = document.getElementById("message");
+    const summary = document.getElementById("summary");
+    const resetBtn = document.getElementById("resetBtn");
+
+    const heroMessages = [
+      "이찌방! 첫 샷 가자!",
+      "Great! 오늘의 오프닝 샷!",
+      "스고이! 용감하게 1번!",
+      "첫 티샷은 네가 주인공!",
+      "1번 출격. 멋지게 보내자!"
+    ];
+
+    let remainingNumbers = [];
+    let assigned = {};
+
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function randomHeroMessage() {
+      return heroMessages[Math.floor(Math.random() * heroMessages.length)];
+    }
+
+    function setMessage(main, sub, hero = false) {
+      message.className = hero ? "message hero" : "message";
+      message.innerHTML = `
+        <div class="message-main">${main}</div>
+        <div class="message-sub">${sub}</div>
+      `;
+    }
+
+    function updateSummary() {
+      const count = Object.keys(assigned).length;
+
+      if (count < 4) {
+        summary.classList.remove("show");
+        return;
+      }
+
+      const ordered = Object.entries(assigned)
+        .map(([player, number]) => ({ player, number }))
+        .sort((a, b) => a.number - b.number);
+
+      summary.innerHTML = ordered
+        .map(item => `${item.number}번: Player ${item.player}`)
+        .join("<br />");
+
+      summary.classList.add("show");
+      setMessage("순서 확정!", "이제 첫 홀로 가면 됩니다.", false);
+    }
+
+    function resetGame() {
+      remainingNumbers = shuffle([1, 2, 3, 4]);
+      assigned = {};
+      buttons.forEach((btn) => {
+        btn.disabled = false;
+        btn.className = "pick-btn unpicked";
+        btn.querySelector(".number").textContent = "?";
+      });
+      summary.innerHTML = "";
+      summary.classList.remove("show");
+      setMessage("눌러서 순서 뽑기", "중복 없이 1번부터 4번까지 나옵니다.", false);
+    }
+
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const player = btn.dataset.player;
+
+        if (assigned[player]) return;
+
+        const number = remainingNumbers.pop();
+        assigned[player] = number;
+
+        btn.classList.remove("unpicked");
+        btn.classList.add("picked");
+        btn.querySelector(".number").textContent = number;
+        btn.disabled = true;
+
+        if (number === 1) {
+          btn.classList.add("first");
+          setMessage(randomHeroMessage(), "용감하게 첫 공을 치는 사람입니다.", true);
+        } else {
+          setMessage(`${number}번 확정`, `Player ${player}, 순서가 정해졌습니다.`, false);
+        }
+
+        updateSummary();
+      });
+    });
+
+    resetBtn.addEventListener("click", resetGame);
+
+    resetGame();
+  </script>
+</body>
+</html>
